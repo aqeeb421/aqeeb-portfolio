@@ -242,11 +242,16 @@ document.querySelector('#app').innerHTML = `
             <span>Contact</span>
           </a>
           <button class="mobile-toggle" id="mobileMenuToggle" aria-label="Toggle navigation menu">
-            <i data-lucide="menu" id="menuToggleIcon"></i>
+            <span class="hamburger-bar"></span>
+            <span class="hamburger-bar"></span>
+            <span class="hamburger-bar"></span>
           </button>
         </div>
       </div>
     </header>
+
+    <!-- Mobile Drawer Backdrop Overlay -->
+    <div class="menu-backdrop" id="menuBackdrop"></div>
 
     <!-- Hero Section (Picto Personal Portfolio Style) -->
     <section class="hero-section" id="hero">
@@ -982,40 +987,65 @@ function setupClipboardCopy() {
 function setupNavbarBehavior() {
   const toggleBtn = document.getElementById('mobileMenuToggle')
   const navMenu = document.getElementById('navMenu')
-  const menuIcon = document.getElementById('menuToggleIcon')
+  const backdrop = document.getElementById('menuBackdrop')
+
+  function openMenu() {
+    if (!navMenu || !toggleBtn) return
+    navMenu.classList.add('open')
+    toggleBtn.classList.add('active')
+    if (backdrop) backdrop.classList.add('open')
+    document.body.style.overflow = 'hidden'
+  }
+
+  function closeMenu() {
+    if (!navMenu || !toggleBtn) return
+    navMenu.classList.remove('open')
+    toggleBtn.classList.remove('active')
+    if (backdrop) backdrop.classList.remove('open')
+    document.body.style.overflow = ''
+  }
 
   if (toggleBtn && navMenu) {
     toggleBtn.addEventListener('click', (e) => {
       e.stopPropagation()
-      const isOpen = navMenu.classList.toggle('open')
-      toggleBtn.classList.toggle('active', isOpen)
-      if (menuIcon) {
-        menuIcon.setAttribute('data-lucide', isOpen ? 'x' : 'menu')
-        createIcons({ icons: { Menu, X } })
+      if (navMenu.classList.contains('open')) {
+        closeMenu()
+      } else {
+        openMenu()
       }
     })
 
-    // Close drawer when any link or button inside it is tapped
-    navMenu.querySelectorAll('.nav-link, button, a').forEach(item => {
-      item.addEventListener('click', () => {
-        navMenu.classList.remove('open')
-        toggleBtn.classList.remove('active')
-        if (menuIcon) {
-          menuIcon.setAttribute('data-lucide', 'menu')
-          createIcons({ icons: { Menu, X } })
+    if (backdrop) {
+      backdrop.addEventListener('click', closeMenu)
+    }
+
+    // Smooth scroll for all navigation links
+    navMenu.querySelectorAll('.nav-link').forEach(link => {
+      link.addEventListener('click', (e) => {
+        const href = link.getAttribute('href')
+        if (href && href.startsWith('#')) {
+          e.preventDefault()
+          closeMenu()
+
+          const targetElem = document.querySelector(href)
+          if (targetElem) {
+            const headerOffset = 76
+            const elementPosition = targetElem.getBoundingClientRect().top
+            const offsetPosition = elementPosition + window.pageYOffset - headerOffset
+
+            window.scrollTo({
+              top: offsetPosition,
+              behavior: 'smooth'
+            })
+          }
         }
       })
     })
 
-    // Close drawer on outside tap
-    document.addEventListener('click', (e) => {
-      if (!navMenu.contains(e.target) && !toggleBtn.contains(e.target) && navMenu.classList.contains('open')) {
-        navMenu.classList.remove('open')
-        toggleBtn.classList.remove('active')
-        if (menuIcon) {
-          menuIcon.setAttribute('data-lucide', 'menu')
-          createIcons({ icons: { Menu, X } })
-        }
+    // Also close on escape key
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && navMenu.classList.contains('open')) {
+        closeMenu()
       }
     })
   }
@@ -1025,8 +1055,17 @@ function setupNavbarBehavior() {
   const modal = document.getElementById('resumeModal')
   if (drawerResumeBtn && modal) {
     drawerResumeBtn.addEventListener('click', () => {
+      closeMenu()
       modal.classList.add('active')
       document.body.style.overflow = 'hidden'
+    })
+  }
+
+  // Hook up drawer PDF button to close menu
+  const drawerPdfBtn = document.getElementById('drawerPdfBtn')
+  if (drawerPdfBtn) {
+    drawerPdfBtn.addEventListener('click', () => {
+      closeMenu()
     })
   }
 }
