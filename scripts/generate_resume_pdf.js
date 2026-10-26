@@ -221,7 +221,7 @@ async function generateResume() {
   cursorY -= 12
 
   // Web Links Line
-  const linksLine = 'GitHub: github.com/aqeeb421  |  LinkedIn: linkedin.com/in/aqeeb-pasha-94790a151  |  Live Store Apps: 12+'
+  const linksLine = 'Portfolio: aqeebhj-portfolio.netlify.app  |  GitHub: github.com/aqeeb421  |  LinkedIn: aqeeb-pasha-94790a151'
   currentPage.drawText(linksLine, {
     x: marginX,
     y: cursorY,

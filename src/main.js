@@ -1,5 +1,6 @@
 import './style.css'
 import confetti from 'canvas-confetti'
+import QRCode from 'qrcode'
 import {
   createIcons,
   Smartphone,
@@ -28,7 +29,9 @@ import {
   Activity,
   Check,
   Send,
-  Sparkles
+  Sparkles,
+  QrCode,
+  Copy
 } from 'lucide'
 
 // High-Definition Brand SVGs
@@ -226,10 +229,20 @@ document.querySelector('#app').innerHTML = `
                 <span>Download PDF CV</span>
               </a>
             </li>
+            <li class="mobile-nav-item">
+              <button class="btn btn-primary-gradient btn-sm" id="drawerShareBtn" style="width:100%; justify-content:center;">
+                <i data-lucide="qr-code"></i>
+                <span>Share Portfolio & QR Code</span>
+              </button>
+            </li>
           </ul>
         </nav>
 
         <div class="nav-actions">
+          <button class="btn btn-secondary btn-sm desktop-only-btn" id="navShareBtn" title="Share portfolio link & QR code">
+            <i data-lucide="qr-code"></i>
+            <span>Share & QR</span>
+          </button>
           <button class="btn btn-secondary btn-sm desktop-only-btn" id="navViewResumeBtn" title="Preview modern ATS resume">
             <i data-lucide="award"></i>
             <span>View CV</span>
@@ -259,9 +272,9 @@ document.querySelector('#app').innerHTML = `
         <div class="hero-content">
           <div class="status-pill">
             <span class="pulse-dot"></span>
-            <span>Available for Lead & Senior Roles</span>
+            <span>Available for Lead Roles</span>
             <span class="pill-divider">•</span>
-            <span class="pill-loc">12+ Production Apps</span>
+            <span class="pill-loc">12+ Live Apps</span>
           </div>
 
           <div class="greeting-text">Hello, I’m</div>
@@ -281,16 +294,16 @@ document.querySelector('#app').innerHTML = `
             </a>
             <a href="#projects" class="btn btn-secondary">
               <i data-lucide="smartphone"></i>
-              <span>View 12+ Projects</span>
+              <span>12+ Projects</span>
             </a>
             <button class="btn btn-secondary" id="heroViewResumeBtn">
               <i data-lucide="award"></i>
-              <span>View Resume</span>
+              <span>Resume</span>
             </button>
-            <a href="/Aqeeb_HJ_Resume.pdf" download="Aqeeb_HJ_Resume.pdf" class="btn btn-outline-primary" id="heroResumeBtn">
-              <i data-lucide="download"></i>
-              <span>Download CV</span>
-            </a>
+            <button class="btn btn-outline-primary" id="heroShareBtn" title="Share portfolio & QR code">
+              <i data-lucide="qr-code"></i>
+              <span>Share & QR</span>
+            </button>
           </div>
 
           <!-- Hero Stats Bar (Picto Style) -->
@@ -790,6 +803,11 @@ document.querySelector('#app').innerHTML = `
               <i data-lucide="download"></i>
               <span>Download Official CV</span>
             </a>
+
+            <button class="contact-link-pill qr-share-btn" id="contactShareBtn" type="button">
+              <i data-lucide="qr-code"></i>
+              <span>Scan QR & Share Portfolio</span>
+            </button>
           </div>
         </div>
       </div>
@@ -819,6 +837,86 @@ document.querySelector('#app').innerHTML = `
         </div>
         <div class="resume-modal-body">
           <iframe src="/resume.html" id="resumeIframe" title="Aqeeb H J Resume Preview"></iframe>
+        </div>
+      </div>
+    </div>
+
+    <!-- Interactive Share Portfolio & QR Code Modal -->
+    <div class="share-modal" id="shareModal">
+      <div class="share-modal-dialog">
+        <div class="share-modal-header">
+          <div class="share-modal-title-group">
+            <div class="share-badge-icon">
+              <i data-lucide="qr-code"></i>
+            </div>
+            <div>
+              <h4>Share Portfolio</h4>
+              <p>Scan QR code or share live weblink with recruiters & teams</p>
+            </div>
+          </div>
+          <button class="modal-close-btn" id="shareModalCloseBtn" aria-label="Close share dialog">
+            <i data-lucide="x"></i>
+          </button>
+        </div>
+
+        <div class="share-modal-body">
+          <!-- QR Code Preview Card -->
+          <div class="share-qr-card">
+            <div class="qr-canvas-wrapper">
+              <canvas id="shareQrCanvas" width="260" height="295"></canvas>
+            </div>
+            <div class="qr-label-pill">
+              <i data-lucide="smartphone"></i>
+              <span>Scan to open live portfolio on phone</span>
+            </div>
+            <button class="btn btn-secondary btn-sm" id="downloadQrBtn">
+              <i data-lucide="download"></i>
+              <span>Download QR Code (.png)</span>
+            </button>
+          </div>
+
+          <!-- Web Link Copy Box -->
+          <div class="share-link-section">
+            <label class="share-link-label">Portfolio Web Link</label>
+            <div class="share-input-group">
+              <input type="text" id="shareUrlInput" class="share-input" readonly value="https://aqeebhj-portfolio.netlify.app/" />
+              <button class="btn btn-primary btn-sm" id="copyShareUrlBtn">
+                <i data-lucide="copy" id="copyIcon"></i>
+                <span id="copyBtnText">Copy Link</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Device Native Share (Web Share API for Android & iOS) -->
+          <div class="native-share-wrap" id="nativeShareWrap">
+            <button class="btn btn-primary-gradient" id="nativeShareBtn" style="width:100%; justify-content:center;">
+              <i data-lucide="share-2"></i>
+              <span>Share via Apps (WhatsApp, LinkedIn, Email...)</span>
+            </button>
+          </div>
+
+          <!-- Quick Social Share Shortcuts -->
+          <div class="social-share-section">
+            <div class="social-share-title">Or share directly:</div>
+            <div class="social-share-grid">
+              <a href="#" id="shareWhatsappBtn" target="_blank" rel="noopener noreferrer" class="social-pill whatsapp">
+                ${WHATSAPP_SVG}
+                <span>WhatsApp</span>
+              </a>
+              <a href="#" id="shareLinkedinBtn" target="_blank" rel="noopener noreferrer" class="social-pill linkedin">
+                ${LINKEDIN_SVG}
+                <span>LinkedIn</span>
+              </a>
+              <a href="#" id="shareTwitterBtn" target="_blank" rel="noopener noreferrer" class="social-pill twitter">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+                <span>X / Twitter</span>
+              </a>
+              <a href="#" id="shareEmailBtn" class="social-pill email">
+                <i data-lucide="mail"></i>
+                <span>Email</span>
+              </a>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -989,84 +1087,94 @@ function setupNavbarBehavior() {
   const navMenu = document.getElementById('navMenu')
   const backdrop = document.getElementById('menuBackdrop')
 
+  if (!toggleBtn || !navMenu) return
+
   function openMenu() {
-    if (!navMenu || !toggleBtn) return
     navMenu.classList.add('open')
     toggleBtn.classList.add('active')
+    toggleBtn.setAttribute('aria-expanded', 'true')
     if (backdrop) backdrop.classList.add('open')
-    document.body.style.overflow = 'hidden'
+    document.body.classList.add('menu-open')
   }
 
   function closeMenu() {
-    if (!navMenu || !toggleBtn) return
     navMenu.classList.remove('open')
     toggleBtn.classList.remove('active')
+    toggleBtn.setAttribute('aria-expanded', 'false')
     if (backdrop) backdrop.classList.remove('open')
-    document.body.style.overflow = ''
+    document.body.classList.remove('menu-open')
   }
 
-  if (toggleBtn && navMenu) {
-    toggleBtn.addEventListener('click', (e) => {
+  function toggleMenu(e) {
+    if (e) {
+      e.preventDefault()
       e.stopPropagation()
-      if (navMenu.classList.contains('open')) {
-        closeMenu()
-      } else {
-        openMenu()
-      }
-    })
-
-    if (backdrop) {
-      backdrop.addEventListener('click', closeMenu)
     }
-
-    // Smooth scroll for all navigation links
-    navMenu.querySelectorAll('.nav-link').forEach(link => {
-      link.addEventListener('click', (e) => {
-        const href = link.getAttribute('href')
-        if (href && href.startsWith('#')) {
-          e.preventDefault()
-          closeMenu()
-
-          const targetElem = document.querySelector(href)
-          if (targetElem) {
-            const headerOffset = 76
-            const elementPosition = targetElem.getBoundingClientRect().top
-            const offsetPosition = elementPosition + window.pageYOffset - headerOffset
-
-            window.scrollTo({
-              top: offsetPosition,
-              behavior: 'smooth'
-            })
-          }
-        }
-      })
-    })
-
-    // Also close on escape key
-    document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape' && navMenu.classList.contains('open')) {
-        closeMenu()
-      }
-    })
+    if (navMenu.classList.contains('open')) {
+      closeMenu()
+    } else {
+      openMenu()
+    }
   }
+
+  // Use direct onclick assignment to guarantee single listener
+  toggleBtn.onclick = toggleMenu
+
+  if (backdrop) {
+    backdrop.onclick = (e) => {
+      e.preventDefault()
+      closeMenu()
+    }
+  }
+
+  // Smooth scroll for all navigation links
+  navMenu.querySelectorAll('.nav-link').forEach(link => {
+    link.onclick = (e) => {
+      const href = link.getAttribute('href')
+      if (href && href.startsWith('#')) {
+        e.preventDefault()
+        closeMenu()
+
+        const targetElem = document.querySelector(href)
+        if (targetElem) {
+          const headerOffset = 76
+          const elementPosition = targetElem.getBoundingClientRect().top
+          const offsetPosition = elementPosition + window.pageYOffset - headerOffset
+
+          window.scrollTo({
+            top: offsetPosition,
+            behavior: 'smooth'
+          })
+        }
+      }
+    }
+  })
+
+  // Also close on escape key
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && navMenu.classList.contains('open')) {
+      closeMenu()
+    }
+  })
 
   // Hook up drawer resume button to modal
   const drawerResumeBtn = document.getElementById('drawerResumeBtn')
   const modal = document.getElementById('resumeModal')
   if (drawerResumeBtn && modal) {
-    drawerResumeBtn.addEventListener('click', () => {
+    drawerResumeBtn.onclick = (e) => {
+      e.preventDefault()
       closeMenu()
       modal.classList.add('active')
-      document.body.style.overflow = 'hidden'
-    })
+      document.body.classList.add('modal-open')
+    }
   }
 
   // Hook up drawer PDF button to close menu
   const drawerPdfBtn = document.getElementById('drawerPdfBtn')
   if (drawerPdfBtn) {
-    drawerPdfBtn.addEventListener('click', () => {
+    drawerPdfBtn.onclick = () => {
       closeMenu()
-    })
+    }
   }
 }
 
@@ -1120,6 +1228,269 @@ function setupResumeModal() {
   }
 }
 
+// Interactive Share Portfolio & QR Code Modal
+function setupShareModal() {
+  const modal = document.getElementById('shareModal')
+  const openButtons = [
+    document.getElementById('navShareBtn'),
+    document.getElementById('drawerShareBtn'),
+    document.getElementById('heroShareBtn'),
+    document.getElementById('contactShareBtn')
+  ]
+  const closeBtn = document.getElementById('shareModalCloseBtn')
+  const qrCanvas = document.getElementById('shareQrCanvas')
+  const downloadQrBtn = document.getElementById('downloadQrBtn')
+  const shareUrlInput = document.getElementById('shareUrlInput')
+  const copyBtn = document.getElementById('copyShareUrlBtn')
+  const copyBtnText = document.getElementById('copyBtnText')
+  const nativeShareBtn = document.getElementById('nativeShareBtn')
+  const nativeShareWrap = document.getElementById('nativeShareWrap')
+  const whatsappBtn = document.getElementById('shareWhatsappBtn')
+  const linkedinBtn = document.getElementById('shareLinkedinBtn')
+  const twitterBtn = document.getElementById('shareTwitterBtn')
+  const emailBtn = document.getElementById('shareEmailBtn')
+
+  if (!modal) return
+
+  // Determine actual public share URL
+  const publicUrl = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+    ? 'https://aqeebhj-portfolio.netlify.app/'
+    : window.location.href.split('#')[0]
+
+  if (shareUrlInput) {
+    shareUrlInput.value = publicUrl
+  }
+
+  // Render High-Quality Branded QR Code with Photo & "Aqeeb H J" Text
+  if (qrCanvas) {
+    const tempCanvas = document.createElement('canvas')
+    QRCode.toCanvas(tempCanvas, publicUrl, {
+      width: 240,
+      margin: 1,
+      color: {
+        dark: '#0F172A',
+        light: '#FFFFFF'
+      },
+      errorCorrectionLevel: 'H'
+    }).then(() => {
+      qrCanvas.width = 260
+      qrCanvas.height = 295
+      const ctx = qrCanvas.getContext('2d')
+      if (!ctx) return
+
+      // Crisp White Canvas Base
+      ctx.fillStyle = '#FFFFFF'
+      ctx.fillRect(0, 0, 260, 295)
+
+      // Draw QR Code Matrix
+      ctx.drawImage(tempCanvas, 10, 8, 240, 240)
+
+      function drawLogoAndLabel(avatarImg) {
+        const centerX = 130
+        const centerY = 128
+        const radius = 27 // Diameter 54px (~22.5% of 240px QR, well within 30% H-level tolerance)
+
+        // Draw protective white halo circle behind logo
+        ctx.save()
+        ctx.beginPath()
+        ctx.arc(centerX, centerY, radius + 4, 0, Math.PI * 2)
+        ctx.fillStyle = '#FFFFFF'
+        ctx.shadowColor = 'rgba(15, 23, 42, 0.22)'
+        ctx.shadowBlur = 8
+        ctx.shadowOffsetY = 2
+        ctx.fill()
+        ctx.restore()
+
+        // Draw photo or fallback monogram
+        if (avatarImg && avatarImg.width > 0) {
+          ctx.save()
+          ctx.beginPath()
+          ctx.arc(centerX, centerY, radius, 0, Math.PI * 2)
+          ctx.clip()
+
+          // Focus on face crop (upper center of portrait)
+          const cropSize = Math.min(avatarImg.width, avatarImg.height) * 0.55
+          const cropX = (avatarImg.width - cropSize) / 2
+          const cropY = avatarImg.height * 0.08
+          ctx.drawImage(avatarImg, cropX, cropY, cropSize, cropSize, centerX - radius, centerY - radius, radius * 2, radius * 2)
+          ctx.restore()
+        } else {
+          // Fallback monogram if image fails to load
+          ctx.save()
+          ctx.beginPath()
+          ctx.arc(centerX, centerY, radius, 0, Math.PI * 2)
+          ctx.fillStyle = '#7C3AED'
+          ctx.fill()
+          ctx.fillStyle = '#FFFFFF'
+          ctx.font = 'bold 22px "Plus Jakarta Sans", sans-serif'
+          ctx.textAlign = 'center'
+          ctx.textBaseline = 'middle'
+          ctx.fillText('A', centerX, centerY)
+          ctx.restore()
+        }
+
+        // Draw elegant violet border around avatar
+        ctx.save()
+        ctx.beginPath()
+        ctx.arc(centerX, centerY, radius, 0, Math.PI * 2)
+        ctx.lineWidth = 2.5
+        ctx.strokeStyle = '#7C3AED'
+        ctx.stroke()
+        ctx.restore()
+
+        // Draw "Aqeeb H J" branded pill below the QR code
+        const bannerY = 256
+        const bannerWidth = 146
+        const bannerHeight = 26
+        const bannerX = (260 - bannerWidth) / 2
+        const bannerR = 13
+
+        ctx.save()
+        ctx.fillStyle = '#F1F5F9'
+        ctx.beginPath()
+        if (ctx.roundRect) {
+          ctx.roundRect(bannerX, bannerY, bannerWidth, bannerHeight, bannerR)
+        } else {
+          ctx.arc(bannerX + bannerR, bannerY + bannerR, bannerR, Math.PI / 2, Math.PI * 1.5)
+          ctx.arc(bannerX + bannerWidth - bannerR, bannerY + bannerR, bannerR, Math.PI * 1.5, Math.PI / 2)
+          ctx.closePath()
+        }
+        ctx.fill()
+        ctx.strokeStyle = '#CBD5E1'
+        ctx.lineWidth = 1
+        ctx.stroke()
+
+        // Text "Aqeeb H J"
+        ctx.fillStyle = '#0F172A'
+        ctx.font = 'bold 12.5px "Plus Jakarta Sans", -apple-system, sans-serif'
+        ctx.textAlign = 'center'
+        ctx.textBaseline = 'middle'
+        ctx.fillText('Aqeeb H J', 130, bannerY + bannerHeight / 2)
+        ctx.restore()
+      }
+
+      const img = new Image()
+      img.crossOrigin = 'anonymous'
+      img.onload = () => drawLogoAndLabel(img)
+      img.onerror = () => drawLogoAndLabel(null)
+      img.src = '/aqeeb_photo.jpg'
+      if (img.complete && img.naturalWidth > 0) {
+        drawLogoAndLabel(img)
+      }
+    }).catch(err => console.error('QR code generation error:', err))
+  }
+
+  // Set up Social Share Links
+  const shareTitle = 'Aqeeb H J — Senior Android & Flutter Developer'
+  const shareText = encodeURIComponent('Check out the portfolio of Aqeeb H J — Senior Android & Flutter Developer with 12+ live applications and 7+ years of experience!')
+  const encodedUrl = encodeURIComponent(publicUrl)
+
+  if (whatsappBtn) {
+    whatsappBtn.href = `https://api.whatsapp.com/send?text=${shareText}%20${encodedUrl}`
+  }
+  if (linkedinBtn) {
+    linkedinBtn.href = `https://www.linkedin.com/sharing/share-offsite/?url=${encodedUrl}`
+  }
+  if (twitterBtn) {
+    twitterBtn.href = `https://twitter.com/intent/tweet?text=${shareText}&url=${encodedUrl}`
+  }
+  if (emailBtn) {
+    emailBtn.href = `mailto:?subject=${encodeURIComponent(shareTitle)}&body=${shareText}%0A%0A${encodedUrl}`
+  }
+
+  // Native Web Share API
+  if (navigator.share) {
+    if (nativeShareWrap) nativeShareWrap.style.display = 'block'
+    if (nativeShareBtn) {
+      nativeShareBtn.onclick = async () => {
+        try {
+          await navigator.share({
+            title: shareTitle,
+            text: 'Check out the mobile portfolio and 12+ live applications of Aqeeb H J',
+            url: publicUrl
+          })
+          confetti({ particleCount: 50, spread: 60, origin: { y: 0.7 } })
+        } catch (err) {
+          if (err.name !== 'AbortError') console.error('Share failed:', err)
+        }
+      }
+    }
+  } else if (nativeShareWrap) {
+    nativeShareWrap.style.display = 'none'
+  }
+
+  function openShareModal() {
+    modal.classList.add('active')
+    document.body.classList.add('modal-open')
+    // Close mobile drawer if open
+    const navMenu = document.getElementById('navMenu')
+    const toggleBtn = document.getElementById('mobileMenuToggle')
+    const backdrop = document.getElementById('menuBackdrop')
+    if (navMenu) navMenu.classList.remove('open')
+    if (toggleBtn) toggleBtn.classList.remove('active')
+    if (backdrop) backdrop.classList.remove('open')
+  }
+
+  function closeShareModal() {
+    modal.classList.remove('active')
+    document.body.classList.remove('modal-open')
+  }
+
+  openButtons.forEach(btn => {
+    if (btn) btn.onclick = openShareModal
+  })
+
+  if (closeBtn) closeBtn.onclick = closeShareModal
+
+  modal.onclick = (e) => {
+    if (e.target === modal) closeShareModal()
+  }
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && modal.classList.contains('active')) {
+      closeShareModal()
+    }
+  })
+
+  // Copy URL with visual checkmark + confetti
+  if (copyBtn && shareUrlInput) {
+    copyBtn.onclick = async () => {
+      try {
+        await navigator.clipboard.writeText(shareUrlInput.value)
+        if (copyBtnText) copyBtnText.textContent = 'Copied!'
+        copyBtn.style.background = '#059669'
+        confetti({ particleCount: 50, spread: 55, origin: { y: 0.75 } })
+        setTimeout(() => {
+          if (copyBtnText) copyBtnText.textContent = 'Copy Link'
+          copyBtn.style.background = ''
+        }, 2200)
+      } catch (err) {
+        shareUrlInput.select()
+        document.execCommand('copy')
+        if (copyBtnText) copyBtnText.textContent = 'Copied!'
+        setTimeout(() => {
+          if (copyBtnText) copyBtnText.textContent = 'Copy Link'
+        }, 2200)
+      }
+    }
+  }
+
+  // Download QR Code image
+  if (downloadQrBtn && qrCanvas) {
+    downloadQrBtn.onclick = () => {
+      try {
+        const link = document.createElement('a')
+        link.download = 'Aqeeb_HJ_Portfolio_QR.png'
+        link.href = qrCanvas.toDataURL('image/png')
+        link.click()
+        confetti({ particleCount: 45, spread: 50, origin: { y: 0.75 } })
+      } catch (err) {
+        console.error('QR download failed:', err)
+      }
+    }
+  }
+}
+
 // Celebration Confetti on Resume Download
 function setupConfetti() {
   const resumeButtons = [
@@ -1143,8 +1514,8 @@ function setupConfetti() {
   })
 }
 
-// Initialize all DOM events
-document.addEventListener('DOMContentLoaded', () => {
+// Initialize portfolio DOM events and handlers once
+function initApp() {
   renderProjects('all')
   setupProjectFilter()
   setupArchitectureTabs()
@@ -1152,16 +1523,10 @@ document.addEventListener('DOMContentLoaded', () => {
   setupNavbarBehavior()
   setupConfetti()
   setupResumeModal()
-})
+  setupShareModal()
+}
 
-// Trigger initial execution
-renderProjects('all')
-setupProjectFilter()
-setupArchitectureTabs()
-setupClipboardCopy()
-setupNavbarBehavior()
-setupConfetti()
-setupResumeModal()
+initApp()
 
 createIcons({
   icons: {
@@ -1191,6 +1556,8 @@ createIcons({
     Activity,
     Check,
     Send,
-    Sparkles
+    Sparkles,
+    QrCode,
+    Copy
   }
 })
