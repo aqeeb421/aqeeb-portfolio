@@ -214,23 +214,35 @@ document.querySelector('#app').innerHTML = `
             <li><a href="#architecture" class="nav-link">Architecture</a></li>
             <li><a href="#skills" class="nav-link">Skills</a></li>
             <li><a href="#experience" class="nav-link">Experience</a></li>
+            <li class="mobile-nav-item">
+              <button class="btn btn-secondary btn-sm" id="drawerResumeBtn" style="width:100%; justify-content:center;">
+                <i data-lucide="award"></i>
+                <span>View ATS Resume</span>
+              </button>
+            </li>
+            <li class="mobile-nav-item">
+              <a href="/Aqeeb_HJ_Resume.pdf" download="Aqeeb_HJ_Resume.pdf" class="btn btn-outline-primary btn-sm" id="drawerPdfBtn" style="width:100%; justify-content:center;">
+                <i data-lucide="download"></i>
+                <span>Download PDF CV</span>
+              </a>
+            </li>
           </ul>
         </nav>
 
         <div class="nav-actions">
-          <a href="#contact" class="btn btn-primary btn-sm">
-            <span>Contact</span>
-          </a>
-          <button class="btn btn-secondary btn-sm" id="navViewResumeBtn" title="Preview modern ATS resume">
+          <button class="btn btn-secondary btn-sm desktop-only-btn" id="navViewResumeBtn" title="Preview modern ATS resume">
             <i data-lucide="award"></i>
             <span>View CV</span>
           </button>
-          <a href="/Aqeeb_HJ_Resume.pdf" download="Aqeeb_HJ_Resume.pdf" class="btn btn-outline-primary btn-sm" id="navResumeBtn" title="Download official PDF resume">
+          <a href="/Aqeeb_HJ_Resume.pdf" download="Aqeeb_HJ_Resume.pdf" class="btn btn-outline-primary btn-sm desktop-only-btn" id="navResumeBtn" title="Download official PDF resume">
             <i data-lucide="download"></i>
             <span>PDF</span>
           </a>
+          <a href="#contact" class="btn btn-primary btn-sm nav-contact-btn">
+            <span>Contact</span>
+          </a>
           <button class="mobile-toggle" id="mobileMenuToggle" aria-label="Toggle navigation menu">
-            <i data-lucide="menu"></i>
+            <i data-lucide="menu" id="menuToggleIcon"></i>
           </button>
         </div>
       </div>
@@ -966,26 +978,55 @@ function setupClipboardCopy() {
   })
 }
 
-// Sticky Header & Active Nav Scroll Spy
+// Sticky Header & Active Nav Scroll Spy & Mobile Drawer
 function setupNavbarBehavior() {
-  // Mobile Menu Toggle
   const toggleBtn = document.getElementById('mobileMenuToggle')
   const navMenu = document.getElementById('navMenu')
+  const menuIcon = document.getElementById('menuToggleIcon')
+
   if (toggleBtn && navMenu) {
-    toggleBtn.addEventListener('click', () => {
-      const isVisible = navMenu.style.display === 'flex'
-      navMenu.style.display = isVisible ? 'none' : 'flex'
-      if (!isVisible) {
-        navMenu.style.flexDirection = 'column'
-        navMenu.style.position = 'absolute'
-        navMenu.style.top = '100%'
-        navMenu.style.left = '0'
-        navMenu.style.right = '0'
-        navMenu.style.background = '#FFFFFF'
-        navMenu.style.padding = '1.5rem'
-        navMenu.style.borderBottom = '1px solid #E2E8F0'
-        navMenu.style.boxShadow = '0 10px 25px rgba(0,0,0,0.08)'
+    toggleBtn.addEventListener('click', (e) => {
+      e.stopPropagation()
+      const isOpen = navMenu.classList.toggle('open')
+      toggleBtn.classList.toggle('active', isOpen)
+      if (menuIcon) {
+        menuIcon.setAttribute('data-lucide', isOpen ? 'x' : 'menu')
+        createIcons({ icons: { Menu, X } })
       }
+    })
+
+    // Close drawer when any link or button inside it is tapped
+    navMenu.querySelectorAll('.nav-link, button, a').forEach(item => {
+      item.addEventListener('click', () => {
+        navMenu.classList.remove('open')
+        toggleBtn.classList.remove('active')
+        if (menuIcon) {
+          menuIcon.setAttribute('data-lucide', 'menu')
+          createIcons({ icons: { Menu, X } })
+        }
+      })
+    })
+
+    // Close drawer on outside tap
+    document.addEventListener('click', (e) => {
+      if (!navMenu.contains(e.target) && !toggleBtn.contains(e.target) && navMenu.classList.contains('open')) {
+        navMenu.classList.remove('open')
+        toggleBtn.classList.remove('active')
+        if (menuIcon) {
+          menuIcon.setAttribute('data-lucide', 'menu')
+          createIcons({ icons: { Menu, X } })
+        }
+      }
+    })
+  }
+
+  // Hook up drawer resume button to modal
+  const drawerResumeBtn = document.getElementById('drawerResumeBtn')
+  const modal = document.getElementById('resumeModal')
+  if (drawerResumeBtn && modal) {
+    drawerResumeBtn.addEventListener('click', () => {
+      modal.classList.add('active')
+      document.body.style.overflow = 'hidden'
     })
   }
 }
@@ -1046,7 +1087,8 @@ function setupConfetti() {
     document.getElementById('navResumeBtn'),
     document.getElementById('heroResumeBtn'),
     document.getElementById('contactCvBtn'),
-    document.getElementById('modalDownloadBtn')
+    document.getElementById('modalDownloadBtn'),
+    document.getElementById('drawerPdfBtn')
   ]
 
   resumeButtons.forEach(btn => {
