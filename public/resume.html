@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Aqeeb H J — Senior Android & Flutter Developer | Resume</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #6D28D9;
+      --primary-light: #EDE9FE;
+      --accent-blue: #0284C7;
+      --dark: #0F172A;
+      --body: #334155;
+      --muted: #64748B;
+      --border: #E2E8F0;
+      --bg: #F8FAFC;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--bg);
+      color: var(--body);
+      line-height: 1.55;
+      font-size: 13.5px;
+      padding: 2rem 1rem 4rem 1rem;
+    }
+    .resume-container {
+      max-width: 860px;
+      margin: 0 auto;
+      background: #FFFFFF;
+      padding: 3rem 3.5rem;
+      border-radius: 20px;
+      box-shadow: 0 10px 40px rgba(15, 23, 42, 0.08);
+      border: 1px solid var(--border);
+    }
+    .action-bar {
+      max-width: 860px;
+      margin: 0 auto 1.5rem auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+    }
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      color: var(--primary);
+      text-decoration: none;
+      font-weight: 700;
+      font-size: 0.95rem;
+    }
+    .btn-group { display: flex; gap: 0.75rem; }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.6rem 1.3rem;
+      border-radius: 9999px;
+      font-weight: 700;
+      font-size: 0.9rem;
+      text-decoration: none;
+      cursor: pointer;
+      border: none;
+      transition: all 0.2s ease;
+    }
+    .btn-primary {
+      background: var(--primary);
+      color: #fff;
+    }
+    .btn-primary:hover { background: #5B21B6; }
+    .btn-secondary {
+      background: #fff;
+      color: var(--dark);
+      border: 1.5px solid var(--border);
+    }
+    .btn-secondary:hover { background: #F1F5F9; }
+
+    /* Resume Header */
+    .header {
+      border-bottom: 2px solid var(--border);
+      padding-bottom: 1.5rem;
+      margin-bottom: 1.8rem;
+    }
+    .header-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+    h1 {
+      font-family: 'Outfit', sans-serif;
+      font-size: 2.2rem;
+      font-weight: 800;
+      color: var(--dark);
+      letter-spacing: -0.02em;
+      line-height: 1.1;
+    }
+    .executive-badge {
+      display: inline-block;
+      background: var(--primary-light);
+      color: var(--primary);
+      font-weight: 700;
+      font-size: 0.78rem;
+      padding: 0.35rem 0.9rem;
+      border-radius: 9999px;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      border: 1px solid rgba(109, 40, 217, 0.2);
+    }
+    .headline {
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: var(--accent-blue);
+      margin-top: 0.35rem;
+      margin-bottom: 0.8rem;
+    }
+    .contact-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem 1.6rem;
+      font-size: 0.9rem;
+      color: var(--muted);
+      margin-top: 0.6rem;
+    }
+    .contact-item {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+    .contact-item a {
+      color: var(--body);
+      text-decoration: none;
+      font-weight: 500;
+    }
+    .contact-item a:hover { color: var(--primary); }
+
+    /* Sections */
+    section { margin-bottom: 1.8rem; }
+    .section-title {
+      font-family: 'Outfit', sans-serif;
+      font-size: 1.05rem;
+      font-weight: 800;
+      color: var(--primary);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      border-bottom: 1.5px solid var(--primary);
+      padding-bottom: 0.3rem;
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    p.summary-text {
+      margin-bottom: 0.7rem;
+      color: var(--body);
+      line-height: 1.65;
+    }
+
+    /* Skills Table / Grid */
+    .skills-table {
+      display: grid;
+      grid-template-columns: 180px 1fr;
+      gap: 0.6rem 1.2rem;
+      background: #F8FAFC;
+      padding: 1.1rem 1.3rem;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+    }
+    .skill-cat {
+      font-weight: 700;
+      color: var(--dark);
+      font-size: 0.88rem;
+    }
+    .skill-list {
+      color: var(--body);
+      font-size: 0.88rem;
+    }
+
+    /* Experience & Projects */
+    .job-block { margin-bottom: 1.4rem; }
+    .job-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-bottom: 0.2rem;
+    }
+    .company-name {
+      font-size: 1.08rem;
+      font-weight: 800;
+      color: var(--dark);
+    }
+    .job-period {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--muted);
+    }
+    .job-role {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--primary);
+      margin-bottom: 0.5rem;
+    }
+    ul.bullet-list {
+      list-style-type: none;
+      padding-left: 0;
+    }
+    ul.bullet-list li {
+      position: relative;
+      padding-left: 1.25rem;
+      margin-bottom: 0.45rem;
+      line-height: 1.5;
+    }
+    ul.bullet-list li::before {
+      content: '•';
+      position: absolute;
+      left: 0.2rem;
+      color: var(--primary);
+      font-weight: bold;
+      font-size: 1.1rem;
+    }
+    ul.bullet-list li strong {
+      color: var(--dark);
+      font-weight: 600;
+    }
+
+    /* Projects Grid */
+    .project-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1.1rem;
+    }
+    .project-card {
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 1rem 1.2rem;
+      background: #FAFCFF;
+    }
+    .project-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.25rem;
+    }
+    .project-title {
+      font-weight: 750;
+      font-size: 0.98rem;
+      color: var(--dark);
+    }
+    .project-badge {
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--primary);
+      background: var(--primary-light);
+      padding: 0.2rem 0.6rem;
+      border-radius: 9999px;
+    }
+    .project-tech {
+      font-size: 0.8rem;
+      font-style: italic;
+      color: var(--muted);
+      margin-bottom: 0.4rem;
+    }
+
+    /* Print Styles */
+    @media print {
+      body {
+        background: #fff;
+        padding: 0;
+        font-size: 11pt;
+      }
+      .action-bar { display: none; }
+      .resume-container {
+        border: none;
+        box-shadow: none;
+        padding: 0;
+        max-width: 100%;
+      }
+      a { text-decoration: none; color: inherit; }
+      .section-title { page-break-after: avoid; }
+      .job-block { page-break-inside: avoid; }
+      .project-card { page-break-inside: avoid; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="action-bar">
+    <a href="/" class="back-link">
+      <span>← Back to Portfolio</span>
+    </a>
+    <div class="btn-group">
+      <button onclick="window.print()" class="btn btn-secondary">
+        🖨️ Print / Save as PDF
+      </button>
+      <a href="/Aqeeb_HJ_Resume.pdf" download="Aqeeb_HJ_Resume.pdf" class="btn btn-primary">
+        ⬇️ Download PDF
+      </a>
+    </div>
+  </div>
+
+  <main class="resume-container">
+    <header class="header">
+      <div class="header-top">
+        <div>
+          <h1>AQEEB H J</h1>
+          <div class="headline">Senior Android & Flutter Developer | Mobile Application Lead</div>
+        </div>
+        <div class="executive-badge">Lead Mobile Dev • 12+ Live Apps</div>
+      </div>
+
+      <div class="contact-grid">
+        <div class="contact-item">📍 Hassan & Bengaluru, Karnataka, India</div>
+        <div class="contact-item">📞 +91 8073804900</div>
+        <div class="contact-item">✉️ <a href="mailto:aqeeb.pasha.hnp@gmail.com">aqeeb.pasha.hnp@gmail.com</a></div>
+        <div class="contact-item">🌐 <a href="https://github.com/aqeeb421" target="_blank">github.com/aqeeb421</a></div>
+        <div class="contact-item">💼 <a href="https://www.linkedin.com/in/aqeeb-pasha-94790a151" target="_blank">LinkedIn Profile</a></div>
+      </div>
+    </header>
+
+    <!-- Executive Summary -->
+    <section>
+      <h2 class="section-title">Executive Summary</h2>
+      <p class="summary-text">
+        Senior Mobile Application Developer & Technical Lead with <strong>7+ years of experience</strong> architecting, developing, and releasing <strong>12+ production mobile applications</strong> across enterprise, public governance, telemedicine, and consumer marketplaces. Deep specialization in <strong>Native Android (Kotlin & Java, Android SDK)</strong> and <strong>Flutter (Dart)</strong> ecosystems.
+      </p>
+      <p class="summary-text">
+        Proven track record owning complete mobile lifecycles: from requirement formulation, REST API design, and hardware sensor pipelines (CameraX, Audio, GPS) to <strong>offline-first sync engines (Room DB + WorkManager)</strong>, <strong>hardware-backed security (Android Keystore, RSA/AES-256, Root Detection)</strong>, and Google Play Console / Apple App Store release management. Certified in Cybersecurity & Ethical Hacking.
+      </p>
+    </section>
+
+    <!-- Technical Skills & Keywords -->
+    <section>
+      <h2 class="section-title">Technical Arsenal & Core Keywords</h2>
+      <div class="skills-table">
+        <div class="skill-cat">Mobile Platforms:</div>
+        <div class="skill-list">Native Android (Kotlin, Java), Android SDK, Flutter, Dart, XML Layouts, Material Design 3, Coroutines, Flow, StateFlow, LiveData</div>
+
+        <div class="skill-cat">Architecture:</div>
+        <div class="skill-list">Clean Architecture, MVVM, MVI, Repository Pattern, Multi-Module Projects, Single Source of Truth, Dependency Injection</div>
+
+        <div class="skill-cat">Offline-First & Data:</div>
+        <div class="skill-list">Room Database, SQLite, WorkManager (Idempotent Background Sync, Constraints, Backoff), EncryptedSharedPreferences, Vector Conflict Resolution</div>
+
+        <div class="skill-cat">Security & Defense:</div>
+        <div class="skill-list">Android Keystore (RSA / AES-256-GCM), Root Detection (RootBeer), SSL Certificate Pinning, SafetyNet / Play Integrity API, ProGuard / R8 Obfuscation</div>
+
+        <div class="skill-cat">Hardware & Media:</div>
+        <div class="skill-list">CameraX API, Audio/Video Streaming Pipelines, Continuous Foreground Services, Location/GPS Geofencing, WhatsApp Cloud Protocol</div>
+
+        <div class="skill-cat">Cloud & DevOps:</div>
+        <div class="skill-list">RESTful APIs, Retrofit 2, OkHttp, JSON/Moshi, Firebase (FCM, Crashlytics, Auth), Google Play Console, App Store Connect, Git, Gradle DSL, Postman</div>
+      </div>
+    </section>
+
+    <!-- Professional Experience -->
+    <section>
+      <h2 class="section-title">Professional Experience</h2>
+
+      <div class="job-block">
+        <div class="job-header">
+          <span class="company-name">Capulus Technology Pvt. Ltd.</span>
+          <span class="job-period">May 2022 – Present | Hassan & Bengaluru, India</span>
+        </div>
+        <div class="job-role">Android Application Developer Lead / Senior Mobile Application Developer</div>
+        <ul class="bullet-list">
+          <li><strong>Lead Architecture & Lifecycle:</strong> Independently responsible for end-to-end mobile architecture, technical implementation, and store releases for public safety and enterprise systems across 12+ live applications.</li>
+          <li><strong>Dual Native & Flutter Mastery:</strong> Developed native Android applications using Java and Kotlin, and scalable cross-platform consumer apps using Flutter and Dart.</li>
+          <li><strong>Offline-First Sync Engine:</strong> Architected 100% offline-first local data storage using Room DB as the single source of truth, integrated with WorkManager for guaranteed background synchronization in zero-connectivity field zones.</li>
+          <li><strong>Enterprise Security:</strong> Implemented hardware-backed Android Keystore cryptography (RSA/AES-256), secure credential handling, runtime root detection, and SSL certificate pinning.</li>
+          <li><strong>Hardware & Sensor Pipelines:</strong> Integrated CameraX video/photo pipeline, continuous foreground services, and location/GPS geofencing for evidence collection and emergency SOS tools.</li>
+          <li><strong>Store Deployment & Release Management:</strong> Managed Google Play Console and App Store release pipelines: configured ProGuard/R8 obfuscation, signed release bundles (.aab), and tracked crash analytics via Firebase Crashlytics with >99.5% crash-free sessions.</li>
+        </ul>
+      </div>
+
+      <div class="job-block">
+        <div class="job-header">
+          <span class="company-name">Wizmindz</span>
+          <span class="job-period">August 2019 – April 2022 | Karnataka, India</span>
+        </div>
+        <div class="job-role">Junior Android Developer</div>
+        <ul class="bullet-list">
+          <li><strong>Native Android UI:</strong> Developed native Android applications using Java and Android SDK adhering to Material Design principles.</li>
+          <li><strong>Telecom & CRM Systems:</strong> Engineered Click-to-Call telecommunications applications and CRM management suites with automatic call logging and audio record handling.</li>
+          <li><strong>API & Data Binding:</strong> Implemented dynamic RecyclerView layouts, complex adapters, and REST API data integration with Retrofit.</li>
+          <li><strong>Performance Optimization:</strong> Conducted memory profiling using Android Profiler, resolved regression bottlenecks, and supported production bug fixes and updates.</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- Key Projects -->
+    <section>
+      <h2 class="section-title">Flagship Production & Key Projects</h2>
+      <div class="project-grid">
+
+        <div class="project-card">
+          <div class="project-card-header">
+            <span class="project-title">BharathFix Multi-App Home Services Platform</span>
+            <span class="project-badge">Play Store Live & Web</span>
+          </div>
+          <div class="project-tech">Tech: Flutter, Dart, Provider, Google Play Store, REST APIs, Firebase</div>
+          <ul class="bullet-list">
+            <li>Multi-app synchronized architecture: consumer Android app on Google Play, technician fulfillment app, governance admin dashboard, and web platform (<a href="https://bharathfix.netlify.app/" target="_blank">bharathfix.netlify.app</a>).</li>
+            <li>Real-time GPS technician tracking, automated job dispatching, end-to-end booking state machine, and payment gateway integration.</li>
+          </ul>
+        </div>
+
+        <div class="project-card">
+          <div class="project-card-header">
+            <span class="project-title">KSP PQRS — Karnataka State Police Citizen Safety App</span>
+            <span class="project-badge">Play Store: com.capulustech.ksppqrs</span>
+          </div>
+          <div class="project-tech">Tech: Native Android, Java, Kotlin, Android SDK, Location Services, REST APIs</div>
+          <ul class="bullet-list">
+            <li>Official citizen-facing public safety platform on Google Play Store featuring digital e-Lost lost-property reporting, emergency SOS panic triggers, nearest police station geolocation, and grievance redressal tracking.</li>
+          </ul>
+        </div>
+
+        <div class="project-card">
+          <div class="project-card-header">
+            <span class="project-title">DoctorPlus & PatientApp Telemedicine Ecosystem</span>
+            <span class="project-badge">Telemedicine • GitHub Open Source</span>
+          </div>
+          <div class="project-tech">Tech: Native Android, Java, CameraX, Foreground Services, Audio/Video, REST</div>
+          <ul class="bullet-list">
+            <li>Dual-sided telehealth mobile ecosystem connecting certified physicians with patients. Engineered real-time video/audio streaming via foreground services, electronic prescriptions, and diagnostic record vaults.</li>
+          </ul>
+        </div>
+
+        <div class="project-card">
+          <div class="project-card-header">
+            <span class="project-title">Fresh Chicken Hassan Hyperlocal Ordering Platform</span>
+            <span class="project-badge">Play Store App & Netlify PWA</span>
+          </div>
+          <div class="project-tech">Tech: Flutter / PWA, Android App, WhatsApp Cloud Protocol, Netlify</div>
+          <ul class="bullet-list">
+            <li>Farm-to-doorstep ordering platform with 1-tap WhatsApp checkout and automated address formatting (<a href="https://fresh-chikens.netlify.app/" target="_blank">fresh-chikens.netlify.app</a>), sub-90-minute delivery routing, and QR verification.</li>
+          </ul>
+        </div>
+
+        <div class="project-card">
+          <div class="project-card-header">
+            <span class="project-title">KSP BWC — Evidence Collection Tool</span>
+            <span class="project-badge">Police Field Tool • High Security</span>
+          </div>
+          <div class="project-tech">Tech: Native Android, CameraX, Android Keystore, AES-256, Offline Sync, Root Detection</div>
+          <ul class="bullet-list">
+            <li>Dedicated police-facing field tool for body-worn camera incident photo and video evidence capture with 100% offline-first local caching and hardware-backed Android Keystore AES/RSA encryption.</li>
+          </ul>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Education & Certification -->
+    <section>
+      <h2 class="section-title">Education & Certifications</h2>
+      <div style="margin-bottom: 0.6rem;">
+        <div style="display:flex; justify-content:space-between; font-weight:750; color:var(--dark);">
+          <span>Bachelor of Engineering (B.E.) — Computer Science & Engineering</span>
+          <span style="color:var(--muted); font-weight:600;">2019</span>
+        </div>
+        <div style="color:var(--body); font-size:0.9rem;">
+          Government Engineering College, Hassan | Affiliated to Visvesvaraya Technological University (VTU)
+        </div>
+      </div>
+      <div style="margin-top:0.6rem; color:var(--primary); font-weight:700;">
+        🛡️ Professional Certification: Cybersecurity and Ethical Hacking
+      </div>
+      <div style="margin-top:0.4rem; color:var(--muted); font-size:0.88rem;">
+        🗣️ Languages: English (Professional Working), Kannada (Native / Fluent), Hindi (Working Proficiency)
+      </div>
+    </section>
+  </main>
+
+</body>
+</html>
